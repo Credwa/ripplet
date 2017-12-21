@@ -1,0 +1,49 @@
+// This file is included in the build if src/main.js imports
+// either app.mat.styl or app.ios.styl.
+// Check "DEFAULT / CUSTOM STYLE" in src/main.js
+
+// App Shared Variables
+// --------------------------------------------------
+// To customize the look and feel of this app, you can override
+// the Stylus variables found in Quasar's source Stylus files. Setting
+// variables before Quasar's Stylus will use these variables rather than
+// Quasar's default Stylus variable values. Stylus variables specific
+// to the themes belong in either the app.ios.styl or app.mat.styl files.
+
+
+// App Shared Color Variables
+// --------------------------------------------------
+// It's highly recommended to change the default colors
+// to match your app's branding.
+
+$primary   = #673ab7
+$secondary = #9c27b0
+$tertiary  = #555
+
+$neutral   = #E0E1E2
+$positive  = #21BA45
+$negative  = #DB2828
+$info      = #31CCEC
+$warning   = #F2C037
+
+main-grad()
+  background: $primary; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, $primary, $secondary); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, $primary, $secondary); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+primary-grad()
+  background: #cc2b5e;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #753a88, #cc2b5e);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #753a88, #cc2b5e); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+
+secondary-grad()
+  background #56CCF2 /* fallback for old browsers */
+  background -webkit-linear-gradient(to right, #2F80ED, #56CCF2) /* Chrome 10-25, Safari 5.1-6 */
+  background linear-gradient(to right, #2F80ED, #56CCF2) /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+neutral-grad()
+  background: #ECE9E6;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #FFFFFF, #ECE9E6);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #FFFFFF, #ECE9E6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
