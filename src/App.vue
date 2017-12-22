@@ -1,20 +1,13 @@
 <template>
   <!-- Don't drop "q-app" class -->
-  <div id="q-app"  v-touch-swipe.horizontal="userHasSwiped">
-    <q-transition duration=1000 group :enter="enter" :leave="leave">
-        <router-view :key="currRoute"/>
-    </q-transition>
-
+  <div id="q-app">
+        <router-view/>
     <footerr> </footerr>
   </div>
 </template>
 
 <script>
-import 'quasar-extras/animate/slideInLeft.css'
-import 'quasar-extras/animate/slideInRight.css'
-import 'quasar-extras/animate/slideOutLeft.css'
-import 'quasar-extras/animate/slideOutRight.css'
-import { TouchSwipe, Toast, QTransition } from 'quasar'
+import {} from 'quasar'
 import footerr from './components/Footer'
 /*
  * Root component
@@ -22,62 +15,50 @@ import footerr from './components/Footer'
 
 export default {
   components: {
-    footerr,
-    Toast,
-    QTransition
-  },
-  directives: {
-    TouchSwipe
+    footerr
   },
   data() {
-    return {
-      routes: ['/', '/play', '/wallet', '/settings'],
-      windowWidth: window.outerWidth,
-      currRoute: 0,
-      enter: 'slideInLeft',
-      leave: 'slideOutRight'
-    }
+    return {}
   },
-  methods: {
-    userHasSwiped(e) {
-      if (e.direction === 'right' && e.distance.x >= this.windowWidth / 2) {
-        this.enter = 'slideInLeft'
-        this.leave = 'slideOutRight'
-        if (this.$route.params[0]) {
-          this.routes.forEach((val, index) => {
-            if (val === this.$route.params[0]) {
-              this.currRoute = index
-            }
-          })
-          this.$router.push(this.routes[this.currRoute - 1])
-        }
-      }
-      if (e.direction === 'left' && e.distance.x >= this.windowWidth / 2) {
-        this.enter = 'slideInRight'
-        this.leave = 'slideOutLeft'
-        if (!this.$route.params[0]) {
-          this.$router.push(this.routes[1])
-          return
-        }
-
-        if (this.$route.params[0] !== this.routes[3]) {
-          this.routes.forEach((val, index) => {
-            if (val === this.$route.params[0]) {
-              this.currRoute = index
-            }
-          })
-          this.$router.push(this.routes[this.currRoute + 1])
-        }
-      }
-    }
-  }
+  methods: {}
 }
 </script>
 
 <style lang='stylus'>
 @import '~variables';
 
+h1, h2, h3, h4, h5, h6 {
+  color: black;
+}
+
 body {
-  main-grad();
+  neutral-grad();
+  color: black;
+}
+
+.tooltipspan {
+  border-radius:50px;
+  &:active {
+    background-color: rgba(117, 117, 117, 0.6);
+  }
+
+  span {
+    display: none;
+    background-color: #424242;
+    z-index: 1000;
+    font-size: 0.6em;
+    border-radius: 10px;
+    font-family: 'Times New Roman', Times, serif;
+    padding: 5px;
+    position: absolute;
+    opacity: 0.9;
+  }
+
+  &:active {
+    span {
+      display: inline-block;
+      position: absolute;
+    }
+  }
 }
 </style>

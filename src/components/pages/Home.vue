@@ -2,21 +2,34 @@
   <q-pull-to-refresh style="color:white" :handler="refresher">
     <div id="home">
       <div class="xrp-usd"><span style="color:#31CCEC ">XRP</span>-<span style="color:#8bc34a ">USD</span> 24h <span style="color: #8bc34a">${{XRPDiffUSD}} </span> | <span :style="percentChange > 0 ? 'color:#8bc34a' : 'color:#FFA726'">(<span v-if="percentChange < 0"> -</span><span v-if="percentChange > 0">+</span>{{Math.abs(percentChange).toLocaleString()}}%)</span></div>
+      <q-card class="balance shadow-4" @click="goToWallet">
+        <div class="ripID">rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn</div>
+        <h4>Balance</h4>
+        <q-card-separator/>
+        <h5>{{balanceXRP.toLocaleString()}} <span style="color:#31CCEC ">XRP</span></h5>
+        <h6>${{balanceUSD.toLocaleString()}} <span style="color:#8bc34a ">USD</span></h6>
+      </q-card>
 
-      <h4>Balance</h4>
-      <h5>{{balanceXRP.toLocaleString()}} <span style="color:#31CCEC ">XRP</span></h5>
-      <h6>${{balanceUSD.toLocaleString()}} <span style="color:#8bc34a ">USD</span></h6>
 
-      <h4 style="margin-top:5vh;" >Life Winnings</h4>
-      <h5>{{winningsXRP.toLocaleString()}} <span style="color:#31CCEC ">XRP</span></h5>
 
-          <canvas id="last30Days" width="100vw" height="80%" ref='last30Days'></canvas>
+      <canvas v-show="!loading" id="last30Days" class="shadow-6" width="80vw" height="80%" ref='last30Days'></canvas>
+      <q-spinner-bars color="purple-9" size="10vh" style="margin-top:15vh" v-show="loading"> </q-spinner-bars>
+      <div class="bg"></div><div class="bg2"></div>
     </div>
   </q-pull-to-refresh>
 </template>
 
 <script>
-import { QBtn, QIcon, QPullToRefresh, Toast, QCard } from 'quasar'
+import {
+  QBtn,
+  QIcon,
+  QPullToRefresh,
+  Toast,
+  QCard,
+  QSpinnerBars,
+  QCardSeparator,
+  QCardTitle
+} from 'quasar'
 import axios from 'axios'
 import Chart from 'chart.js'
 import moment from 'moment'
@@ -27,7 +40,10 @@ export default {
     QIcon,
     Toast,
     QPullToRefresh,
-    QCard
+    QCard,
+    QSpinnerBars,
+    QCardSeparator,
+    QCardTitle
   },
   data() {
     return {
@@ -39,7 +55,8 @@ export default {
       XRPDiffUSD: 0,
       percentChange: 0,
       XRPLast30Days: [],
-      XRPLabelDays: []
+      XRPLabelDays: [],
+      loading: false
     }
   },
   methods: {
@@ -51,9 +68,13 @@ export default {
         this.$router.push('/')
         done()
       }, 1000)
+    },
+    goToWallet() {
+      this.$router.push('/wallet')
     }
   },
   created() {
+    this.loading = true
     // change request to backend and websocket
     axios
       .get('https://api.coinmarketcap.com/v1/ticker/ripple/')
@@ -100,12 +121,23 @@ export default {
                 {
                   ticks: {
                     beginAtZero: true
+                  },
+                  gridLines: {
+                    color: 'rgba(117,117,117,.05)'
+                  }
+                }
+              ],
+              xAxes: [
+                {
+                  gridLines: {
+                    color: 'rgba(0,0,0,0)'
                   }
                 }
               ]
             }
           }
         })
+        this.loading = false
         myChart.render()
       })
       .catch(e => {
@@ -121,13 +153,56 @@ export default {
 @import '~variables';
 
 h4 {
-  color: #E0E0E0;
+  color: #616161;
+}
+
+.balance {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  align-items: center;
+  neutral-grad();
+  border-radius: 3px;
+  flex-wrap: wrap;
+  margin-bottom: 8vh;
+}
+
+.balance:active {
+  box-shadow: 1px 1px grey;
+}
+
+.q-card-separator {
+  width: 90%;
+}
+
+.ripID {
+  font-size: 0.9em;
+  color: grey;
+}
+
+.bg {
+  background-color: $primary;
+  position: absolute;
+  z-index: -1;
+  height: 30vh;
+  top: 0;
+  width: 100vw;
+}
+
+.bg2 {
+  background-color: $primary;
+  position: absolute;
+  z-index: -1;
+  height: 30vh;
+  bottom: 0;
+  width: 100vw;
 }
 
 #last30Days {
-  background-color: white;
+  neutral-grad();
   border-radius: 5px;
   max-height: 45vh;
+  max-width: 90vw;
 }
 
 #home {
@@ -138,6 +213,7 @@ h4 {
   display: flex;
   flex-direction: column;
   align-items: center;
+  color: white;
 }
 
 .xrp-usd {

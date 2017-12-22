@@ -2,7 +2,6 @@
   <div id="footer">
       <q-tabs align="justify" class="shadow-6" color="purple-10" slot="navigation" >
           <q-route-tab to="/" name="home" slot="title" icon="home"/>
-          <q-route-tab to="/play" name="alarms" slot="title" icon="grade"/>
           <q-route-tab to="/wallet" name="movies" slot="title" icon="attach_money"/>
           <q-route-tab to="/settings" name="settings" slot="title" icon="settings"/>
       </q-tabs>
@@ -25,9 +24,11 @@ export default {
 @import '~variables';
 
 .q-tabs {
-  position: fixed;
+  position: fixed
   bottom: 0;
   width: 100%;
+  margin-top: 3vh
+  z-index: 1000
 }
 
 .q-tab {

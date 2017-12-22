@@ -1,6 +1,6 @@
 # Quasar App
 
-> A Quasar project
+> A Ripple Cryptocurrency wallet
 
 ## Build Setup
 

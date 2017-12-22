@@ -28,19 +28,9 @@ export default new VueRouter({
     { path: '/', component: load('Home') },
     { path: '/login', component: load('Login') },
     { path: '/signup', component: load('Signup') },
-    {
-      path: '/play',
-      component: load('Play')
-    },
-    {
-      path: '/play/create',
-      component: load('CreateRoom')
-    },
-    {
-      path: '/play/join',
-      component: load('JoinRoom')
-    },
-
+    { path: '/wallet', component: load('Wallet') },
+    { path: '/wallet/send', component: load('Send') },
+    { path: '/settings', component: load('Settings') },
     // Always leave this last one
     { path: '*', component: load('Error404') } // Not found
   ]
