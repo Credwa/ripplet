@@ -1,6 +1,6 @@
 <template>
   <div id="footer">
-      <q-tabs align="justify" class="shadow-6" color="purple-10" slot="navigation" >
+      <q-tabs align="justify" class="shadow-6" color="blue-14" slot="navigation" >
           <q-route-tab to="/" name="home" slot="title" icon="home"/>
           <q-route-tab to="/wallet" name="movies" slot="title" icon="attach_money"/>
           <q-route-tab to="/settings" name="settings" slot="title" icon="settings"/>

@@ -3,7 +3,7 @@
   <headerr title="Send"> </headerr>
   <div id="amount">
     <h5>{{amountToSend.toLocaleString(undefined, {minimumFractionDigits: 8})}} XRP</h5>
-    <h6>${{(amountToSend * 1.124).toLocaleString()}} USD</h6>
+    <h6>${{(amountToSend * getXRPDiffUSD).toLocaleString()}} USD</h6>
 
     <div class="keys">
       <div class="key relative-position" v-for="(key, index) in keys" :key="key"  @click="keyClicked(key)" v-ripple>{{key}}
@@ -11,27 +11,72 @@
       </div>
     </div>
 
-    <q-btn color="purple-10" style="width: 80%" @click="continuetoTransaction()">Continue</q-btn>
+    <q-btn color="purple-10" style="width: 80%" @click="continueToTransaction()">Continue</q-btn>
   </div>
   <q-modal v-model="continueTrans" maximized>
-      <q-icon class="relative-position tooltipspan" style="font-size:2em; float: right" name="close" @click="continueTrans = false" v-ripple>
-        <span style="right: 100%">Close</span>
+      <q-icon class="relative-position tooltipspan close" style="font-size:2em;" name="close" @click="continueTrans = false" v-ripple>
+        <span style="right: 100%; color: white">Close</span>
       </q-icon>
 
-    </q-modal>
+      <div class="details" v-if="!sending && !sent && !notSent">
+        <h6>{{amountToSend.toLocaleString(undefined, {minimumFractionDigits: 8})}} XRP </h6>
+        <q-field class="inputData"
+        >
+          <q-input v-model="rippleIDToSend" type="email" :after="[{icon: 'fa-qrcode', handler () {
+            scanQR()
+          }}]" float-label="Address" class="inputData"  color="purple-8"/>
+        </q-field>
+
+        <q-field class="inputData"
+        >
+          <q-input v-model="secret" float-label="Deposit Tag (Optional)" color="purple-8"/>
+        </q-field>
+        <q-field class="inputData"
+        >
+          <q-input v-model="secret" float-label="Invoice ID (Optional)" color="purple-8"/>
+        </q-field>
+        <q-btn color="purple-10" style="width: 100%; top : 20vh" @click="send()">Send</q-btn>
+      </div>
+
+  </q-modal>
 </div>
 
 </template>
 
 <script>
 import headerr from './../Header'
-import { QBtn, QIcon, Ripple, QModal } from 'quasar'
+import {
+  QBtn,
+  QIcon,
+  Ripple,
+  QModal,
+  Toast,
+  QField,
+  QInput,
+  Loading,
+  QSpinnerPuff
+} from 'quasar'
+const rippleAddress = require('ripple-address-codec')
+import { mapGetters } from 'vuex'
+
+function show(options) {
+  Loading.show(options)
+  setTimeout(() => {
+    Loading.hide()
+  }, 3000)
+}
+
 export default {
   components: {
     headerr,
     QBtn,
     QIcon,
-    QModal
+    QModal,
+    Toast,
+    QField,
+    QInput,
+    Loading,
+    QSpinnerPuff
   },
   directives: {
     Ripple
@@ -55,10 +100,19 @@ export default {
       amountToSend: 0,
       decimalPressed: false,
       secondDecimal: false,
-      continueTrans: false
+      continueTrans: false,
+      amountValid: false,
+      secret: '',
+      rippleIDToSend: null,
+      sending: false,
+      sent: false,
+      notSent: false
     }
   },
   methods: {
+    scanQR() {
+
+    },
     keyClicked(key) {
       if (!this.isMaxLength(this.amountToSend)) {
         if (key !== '.' && key !== '') {
@@ -66,20 +120,17 @@ export default {
             let tempString = this.amountToSend
             tempString = tempString + key.toString()
             this.amountToSend = Number(tempString)
-          }
-          else if (!this.secondDecimal) {
+          } else if (!this.secondDecimal) {
             let tempString = this.amountToSend
             tempString = tempString + '.' + key.toString()
             this.amountToSend = Number(tempString)
             this.secondDecimal = true
-          }
-          else {
+          } else {
             let tempString = this.amountToSend
             tempString = tempString + key.toString()
             this.amountToSend = Number(tempString)
           }
-        }
-        else if (key === '.') {
+        } else if (key === '.') {
           if (this.amountToSend.toString().indexOf('.') === -1) {
             this.decimalPressed = true
           }
@@ -105,7 +156,43 @@ export default {
       return false
     },
     continueToTransaction() {
-
+      if (this.amountToSend === 0) {
+        Toast.create.warning({
+          html: "Amount Can't Be 0"
+        })
+      } else {
+        this.continueTrans = true
+      }
+    },
+    send() {
+      if (rippleAddress.isValidAddress(this.rippleIDToSend.trim())) {
+        Loading.show({
+          spinner: QSpinnerPuff,
+          spinnerColor: 'purple',
+          message: 'Sending...',
+          messageColor: 'white',
+          spinnerSize: 200
+        })
+        setTimeout(() => {
+          show({
+            message: `${this.amountToSend} XRP Successfully Sent`,
+            messageColor: 'white',
+            spinnerColor: 'green',
+            spinnerSize: 1
+          })
+          this.amountToSend = 0
+          this.$router.push('/wallet')
+        }, 3000)
+        this.continueTrans = false
+      } else {
+        Toast.create.warning({ html: 'Ripple Address not valid ' })
+      }
+    }
+  },
+  computed: mapGetters(['getXRPDiffUSD', 'getBalanceXRP', 'getWalletID']),
+  created() {
+    if (this.$route.params.address !== 'null') {
+      this.rippleIDToSend = this.$route.params.address
     }
   }
 }
@@ -116,6 +203,25 @@ export default {
 
 h6 {
   color: #616161;
+}
+
+.details {
+  margin-top: 15vh;
+  max-width: 90vw;
+  min-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  margin-left: 5vw;
+  margin-right: 5vw;
+}
+
+.inputData {
+  display: flex;
+  flex-direction: row;
+  min-width: 90vw;
 }
 
 #amount {

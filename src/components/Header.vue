@@ -1,7 +1,7 @@
 <template>
 <div>
-    <q-toolbar id="header" class="shadow-6">
-        <q-btn flat>
+    <q-toolbar id="header" class="shadow-5">
+        <q-btn flat v-if="!isFirst">
           <q-icon v-if="canGoBack" class="relative-position tooltipspan" name="keyboard_arrow_left" @click="goBack" v-ripple>
           <span>Go Back</span>
           </q-icon>
@@ -71,6 +71,13 @@ export default {
         return true
       }
       return false
+    },
+    isFirst() {
+      let route = this.$route.path
+      if (route === '/wallet' || route === '/settings') {
+        return true
+      }
+      return false
     }
   }
 }
@@ -80,7 +87,7 @@ export default {
 @import '~variables';
 
 #header {
-  z-index: 1000
+  z-index: 1000;
   background-color: $primary;
   position: fixed;
   top: 0;
@@ -90,8 +97,6 @@ export default {
   justify-content: center;
   align-content: center;
 }
-
-
 
 .headerTitle {
 }

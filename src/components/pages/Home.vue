@@ -1,20 +1,18 @@
 <template>
   <q-pull-to-refresh style="color:white" :handler="refresher">
     <div id="home">
-      <div class="xrp-usd"><span style="color:#31CCEC ">XRP</span>-<span style="color:#8bc34a ">USD</span> 24h <span style="color: #8bc34a">${{XRPDiffUSD}} </span> | <span :style="percentChange > 0 ? 'color:#8bc34a' : 'color:#FFA726'">(<span v-if="percentChange < 0"> -</span><span v-if="percentChange > 0">+</span>{{Math.abs(percentChange).toLocaleString()}}%)</span></div>
+      <div class="xrp-usd"><span style="color:#31CCEC ">XRP</span>-<span style="color:#8bc34a ">USD</span> 24h <span style="color: #8bc34a">${{ getXRPDiffUSD }} </span> | <span :style="percentChange > 0 ? 'color:#8bc34a' : 'color:#FFA726'">(<span v-if="percentChange < 0"> -</span><span v-if="percentChange > 0">+</span>{{ Math.abs(percentChange).toLocaleString() }}%)</span></div>
       <q-card class="balance shadow-4" @click="goToWallet">
-        <div class="ripID">rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn</div>
+        <div class="ripID"> {{ getWalletID }}</div>
         <h4>Balance</h4>
         <q-card-separator/>
-        <h5>{{balanceXRP.toLocaleString()}} <span style="color:#31CCEC ">XRP</span></h5>
-        <h6>${{balanceUSD.toLocaleString()}} <span style="color:#8bc34a ">USD</span></h6>
+        <h5>{{ getBalanceXRP.toLocaleString() }} <span style="color:#31CCEC ">XRP</span></h5>
+        <h6>${{ calcBalanceUSD.toLocaleString() }} <span style="color:#8bc34a ">USD</span></h6>
       </q-card>
 
-
-
       <canvas v-show="!loading" id="last30Days" class="shadow-6" width="80vw" height="80%" ref='last30Days'></canvas>
-      <q-spinner-bars color="purple-9" size="10vh" style="margin-top:15vh" v-show="loading"> </q-spinner-bars>
-      <div class="bg"></div><div class="bg2"></div>
+      <q-spinner-puff color="blue-14" size="10vh" style="margin-top:15vh" v-show="loading"> </q-spinner-puff>
+      <div class="bg"></div>
     </div>
   </q-pull-to-refresh>
 </template>
@@ -26,13 +24,14 @@ import {
   QPullToRefresh,
   Toast,
   QCard,
-  QSpinnerBars,
+  QSpinnerPuff,
   QCardSeparator,
   QCardTitle
 } from 'quasar'
 import axios from 'axios'
 import Chart from 'chart.js'
 import moment from 'moment'
+import { mapGetters, mapMutations } from 'vuex'
 
 export default {
   components: {
@@ -41,18 +40,13 @@ export default {
     Toast,
     QPullToRefresh,
     QCard,
-    QSpinnerBars,
+    QSpinnerPuff,
     QCardSeparator,
     QCardTitle
   },
   data() {
     return {
       canGoBack: window.history.length > 1,
-      balanceXRP: 56.881,
-      balanceUSD: 0,
-      balanceChange: 0,
-      winningsXRP: 0,
-      XRPDiffUSD: 0,
       percentChange: 0,
       XRPLast30Days: [],
       XRPLabelDays: [],
@@ -60,6 +54,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['setXRPDiffUSD', 'setBalanceXRP']),
     goBack() {
       window.history.go(-1)
     },
@@ -73,15 +68,15 @@ export default {
       this.$router.push('/wallet')
     }
   },
+  computed: mapGetters(['calcBalanceUSD', 'getXRPDiffUSD', 'getBalanceXRP', 'getWalletID']),
   created() {
     this.loading = true
     // change request to backend and websocket
     axios
       .get('https://api.coinmarketcap.com/v1/ticker/ripple/')
       .then(res => {
+        this.$store.commit('setXRPDiffUSD', res.data[0].price_usd)
         this.percentChange = res.data[0].percent_change_24h
-        this.XRPDiffUSD = res.data[0].price_usd
-        this.balanceUSD = this.balanceXRP * this.XRPDiffUSD
       })
       .catch(e => {
         Toast.create.warning({ html: 'Unable to load data try again later' })

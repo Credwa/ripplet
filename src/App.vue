@@ -36,6 +36,12 @@ body {
   color: black;
 }
 
+.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
 .tooltipspan {
   border-radius:50px;
   &:active {

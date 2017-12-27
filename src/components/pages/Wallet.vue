@@ -3,10 +3,10 @@
     <headerr title="Wallet"> </headerr>
     <div id="wallet">
       <div class="bg">
-        <h5>{{balanceXRP.toLocaleString()}} <span style="color:#31CCEC ">XRP</span></h5>
-        <h6>${{balanceUSD.toLocaleString()}} <span style="color:#8bc34a ">USD</span></h6>
+        <h5>{{ getBalanceXRP.toLocaleString() }} <span style="color:#31CCEC ">XRP</span></h5>
+        <h6>${{ calcBalanceUSD.toLocaleString() }} <span style="color:#8bc34a ">USD</span></h6>
 
-         <q-btn color="blue-8" icon="fa-send" style="margin-top: 4vh; margin-bottom: 4vh" @click="sendXRP">Send</q-btn>
+         <q-btn color="purple-6" icon="fa-send" style="margin-top: 4vh; margin-bottom: 4vh" @click="sendXRP">Send</q-btn>
 
       </div>
       <h5 style="color:grey">
@@ -23,6 +23,7 @@
 import headerr from './../Header'
 import transaction from './../Transaction'
 import { QIcon, Ripple, QBtn } from 'quasar'
+import { mapGetters } from 'vuex'
 export default {
   components: {
     headerr,
@@ -35,59 +36,64 @@ export default {
   },
   data() {
     return {
-      balanceXRP: 56.881,
-      balanceUSD: 0,
       transactions: [
         {
           sent: false,
           address: 'rndofanfskmglagakdsgnGKDNGDpdkgm',
           date: '12/21/17',
           remainingXRP: '125105180',
-          transactionXRP: '25'
+          transactionXRP: '25',
+          status: 1
         },
         {
           sent: true,
           address: 'rndofanfskmglagakdsgnGKDNGDpdkgm',
           date: '12/21/17',
           remainingXRP: '125105180',
-          transactionXRP: '15'
+          transactionXRP: '15',
+          status: 1
         },
         {
           sent: true,
           address: 'rndofanfskmglagakdsgnGKDNGDpdkgm',
           date: '12/20/17',
           remainingXRP: '125105180',
-          transactionXRP: '125'
+          transactionXRP: '125',
+          status: 1
         },
         {
           sent: false,
           address: 'rndofanfskmglagakdsgnGKDNGDpdkgm',
           date: '12/19/17',
           remainingXRP: '125105180',
-          transactionXRP: '325'
+          transactionXRP: '325',
+          status: 1
         },
         {
           sent: false,
           address: 'rndofanfskmglagakdsgnGKDNGDpdkgm',
           date: '12/19/17',
           remainingXRP: '125105180',
-          transactionXRP: '500'
+          transactionXRP: '500',
+          status: 3
         },
         {
           sent: true,
           address: 'rndofanfskmglagakdsgnGKDNGDpdkgm',
           date: '12/18/17',
           remainingXRP: '125105180',
-          transactionXRP: '623'
+          transactionXRP: '623',
+          status: 2
         }
       ]
     }
   },
   methods: {
     sendXRP() {
-      this.$router.push('/wallet/send')
+      this.$router.push('/wallet/send/null')
     }
-  }
+  },
+  computed: mapGetters(['calcBalanceUSD', 'getBalanceXRP'])
 }
 </script>
 
@@ -123,7 +129,7 @@ h5, h6 {
   flex-direction: column;
   align-items: center;
   color: white;
-  text-align center
+  text-align: center;
 }
 </style>
 

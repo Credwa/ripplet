@@ -29,7 +29,7 @@ export default new VueRouter({
     { path: '/login', component: load('Login') },
     { path: '/signup', component: load('Signup') },
     { path: '/wallet', component: load('Wallet') },
-    { path: '/wallet/send', component: load('Send') },
+    { path: '/wallet/send/:address', component: load('Send') },
     { path: '/settings', component: load('Settings') },
     // Always leave this last one
     { path: '*', component: load('Error404') } // Not found

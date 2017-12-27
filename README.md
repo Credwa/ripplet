@@ -1,6 +1,6 @@
-# Quasar App
+# Ripplet
 
-> A Ripple Cryptocurrency wallet
+> A Ripple (XRP) Cryptocurrency wallet
 
 ## Build Setup
 
