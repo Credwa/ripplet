@@ -68,7 +68,12 @@ export default {
       this.$router.push('/wallet')
     }
   },
-  computed: mapGetters(['calcBalanceUSD', 'getXRPDiffUSD', 'getBalanceXRP', 'getWalletID']),
+  computed: mapGetters([
+    'calcBalanceUSD',
+    'getXRPDiffUSD',
+    'getBalanceXRP',
+    'getWalletID'
+  ]),
   created() {
     this.loading = true
     // change request to backend and websocket

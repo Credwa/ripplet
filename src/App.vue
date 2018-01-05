@@ -43,7 +43,8 @@ body {
 }
 
 .tooltipspan {
-  border-radius:50px;
+  border-radius: 50px;
+
   &:active {
     background-color: rgba(117, 117, 117, 0.6);
   }

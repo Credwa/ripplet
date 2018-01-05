@@ -10,7 +10,6 @@
           <q-icon v-if="index === 'back'" name="fa-arrow-left"></q-icon>
       </div>
     </div>
-
     <q-btn color="purple-10" style="width: 80%" @click="continueToTransaction()">Continue</q-btn>
   </div>
   <q-modal v-model="continueTrans" maximized>
@@ -45,6 +44,7 @@
 
 <script>
 import headerr from './../Header'
+
 import {
   QBtn,
   QIcon,
@@ -58,7 +58,6 @@ import {
 } from 'quasar'
 const rippleAddress = require('ripple-address-codec')
 import { mapGetters } from 'vuex'
-
 function show(options) {
   Loading.show(options)
   setTimeout(() => {
@@ -106,7 +105,7 @@ export default {
       rippleIDToSend: null,
       sending: false,
       sent: false,
-      notSent: false
+      notSent: false,
     }
   },
   methods: {
@@ -198,7 +197,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus">
 @import '~variables';
 
 h6 {
